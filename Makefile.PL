@@ -7,7 +7,7 @@ WriteMakefile(
     NAME                => 'Amazon::SQS::ProducerConsumer',
     AUTHOR              => q{Nic Wolff <nic@angel.net>},
     VERSION_FROM        => 'lib/Amazon/SQS/ProducerConsumer/Base.pm',
-    ABSTRACT            => 'Produce/Consume classes for Amazon Simple Queue Service (SQS)',
+    ABSTRACT            => 'Producer and Consumer classes for Amazon Simple Queue Service (SQS)',
     ($ExtUtils::MakeMaker::VERSION >= 6.3002
       ? ('LICENSE'=> 'perl')
       : ()),
