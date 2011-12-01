@@ -27,29 +27,29 @@ $SIG{CHLD} = 'IGNORE';
 
 =head1 SYNOPSIS
 
-use Amazon::SQS::Producer;
+  use Amazon::SQS::Producer;
 
-my $out_queue = new Angel::Amazon::SQS::Publisher
-	AWSAccessKeyId => 'PUBLIC_KEY_HERE',
-	SecretAccessKey => 'SECRET_KEY_HERE',
-	ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
-	queue => 'YourOutputQueue',
-	consumer => 'ConsumerForOutputQueue';
+  my $out_queue = new Amazon::SQS::Producer
+    AWSAccessKeyId => 'PUBLIC_KEY_HERE',
+    SecretAccessKey => 'SECRET_KEY_HERE',
+    ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
+    queue => 'YourOutputQueue',
+    consumer => 'ConsumerForOutputQueue';
 
-$out_queue->publish(
-	$existingObjectRef,
-	url => $enclosure_URL,
-	pubdate => $pubDate,
-	title => $title,
-	description => $description,
-	rss_guid => $guid,
-);
+  $out_queue->publish(
+    $existingObjectRef,
+    url => $enclosure_URL,
+    pubdate => $pubDate,
+    title => $title,
+    description => $description,
+    rss_guid => $guid,
+  );
 
 =head1 METHODS
 
 =head2 new(%params)
 
-This is the constructor, it will return you an Angel::Amazon::SQS::Publisher object to work with.  It takes these parameters:
+This is the constructor, it will return you an Amazon::SQS::Producer object to work with.  It takes these parameters:
 
 =over
 
@@ -76,6 +76,8 @@ The name of an executable that will consume messages from the queue we're publis
 =item debug (optional)
 
 A flag to turn on debugging. It is turned off by default.
+
+=back
 
 =cut
 

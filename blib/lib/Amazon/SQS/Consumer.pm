@@ -32,17 +32,17 @@ $SIG{CHLD} = 'IGNORE';
 
 =head1 SYNOPSIS
 
-use Angel::Amazon::SQS::Consumer;
+  use Angel::Amazon::SQS::Consumer;
 
-my $in_queue = new Angel::Amazon::SQS::Consumer
-	AWSAccessKeyId => 'PUBLIC_KEY_HERE',
-	SecretAccessKey => 'SECRET_KEY_HERE',
-	ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
-	queue => 'YourInputQueue';
+  my $in_queue = new Angel::Amazon::SQS::Consumer
+    AWSAccessKeyId => 'PUBLIC_KEY_HERE',
+    SecretAccessKey => 'SECRET_KEY_HERE',
+    ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
+    queue => 'YourInputQueue';
 
-while ( my $item = $in_queue->next ) {
-	# Do stuff with the item
-}
+  while ( my $item = $in_queue->next ) {
+    # Do stuff with the item
+  }
 
 =head1 METHODS
 
@@ -75,6 +75,8 @@ The number of seconds to wait for a new message when the queue is empty.
 =item debug (optional)
 
 A flag to turn on debugging. It is turned off by default.
+
+=back
 
 =cut
 

@@ -1,18 +1,16 @@
 #!/usr/bin/perl -s
 use strict;
 
-use Test::More tests => 8;
+use Test::More;
 
-BEGIN {
-	use_ok( 'Amazon::SQS::Producer', 'use Amazon::SQS::Producer' );
+if ( $ENV{AWS_PUBLIC_KEY} && $ENV{AWS_SECRET_KEY} ) {
+	plan tests => 8;
+} else {
+	plan skip_all => 'AWS_PUBLIC_KEY and AWS_SECRET_KEY environment variables not set, skipping all tests.';
 }
 
-BEGIN {
-	use_ok( 'Amazon::SQS::Consumer', 'use Amazon::SQS::Consumer' );
-}
-
-if ( ! $ENV{AWS_PUBLIC_KEY} ) { diag( 'Did you set the env var AWS_PUBLIC_KEY?' ) && die }
-if ( ! $ENV{AWS_SECRET_KEY} ) { diag( 'Did you set the env var AWS_SECRET_KEY?' ) && die }
+use_ok( 'Amazon::SQS::Producer' );
+use_ok( 'Amazon::SQS::Consumer' );
 
 my $in_queue = new Amazon::SQS::Consumer
 	AWSAccessKeyId => $ENV{AWS_PUBLIC_KEY},
