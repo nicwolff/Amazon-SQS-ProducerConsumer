@@ -1,15 +1,9 @@
 Amazon-SQS-ProducerConsumer
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
-
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it to get an idea of the module's uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
+This module makes it easy to use Amazon's Simple Queue Service to coordinate
+worker processes using a producer/consumer pattern in which each processes
+loops while reading messages from a queues, processes them, and publishes new
+messages in other queues to drive the workflow along to other workers.
 
 
 INSTALLATION
@@ -19,6 +13,10 @@ To install this module, run the following commands:
 	perl Makefile.PL
 	make
 	make test
+
+		(To pass all tests, you will have to create an SQS queue called TestQueue
+		and put your AWS_PUBLIC_KEY and AWS_SECRET_KEY in environment variables.)
+
 	make install
 
 SUPPORT AND DOCUMENTATION
