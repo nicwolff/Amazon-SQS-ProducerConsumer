@@ -106,10 +106,7 @@ sub next {
 	my $me = shift;
 
 	# If we're done with the previous message, delete it
-	if ( $me->{DeleteMessageHandle} ) {
-		say "deleting message $me->{DeleteMessageHandle}" if $me->{debug};
-		$me->delete_message( Queue => $me->{queue}, ReceiptHandle => $me->{DeleteMessageHandle} );
-	}
+	$me->delete_previous();
 
 	if ( @ARGV ) {
 		$me->{messages} = [ map { MessageId => undef, Body => $_ }, @ARGV ];
@@ -125,7 +122,7 @@ sub next {
 			Queue => $me->{queue},
 			MaxNumberOfMessages => $me->{n_messages},
 			defined $me->{timeout} ? ( VisibilityTimeout => $me->{timeout} ) : ()
-		) unless @{$me->{messages}} or $me->{no_loop};
+		) unless defined $me->{messages} && @{$me->{messages}} or $me->{no_loop};
 
 		# If there's a message in the cache, return it
 		if ( my $message = shift @{$me->{messages}} ) {
@@ -156,6 +153,15 @@ sub next {
 	# If we've retried for a while and gotten no messages, give up
 	return undef;
 
+}
+
+sub delete_previous {
+	my $me = shift;
+
+	if ( $me->{DeleteMessageHandle} ) {
+		say "deleting message $me->{DeleteMessageHandle}" if $me->{debug};
+		$me->delete_message( Queue => $me->{queue}, ReceiptHandle => $me->{DeleteMessageHandle} );
+	}
 }
 
 sub defer { delete $_[0]->{DeleteMessageHandle} }

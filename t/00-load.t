@@ -9,5 +9,3 @@ BEGIN {
 BEGIN {
     use_ok( 'Amazon::SQS::Consumer', 'use Amazon::SQS::Consumer' ) || print "Bail out!\n";
 }
-
-diag( "Testing Amazon::SQS::ProducerConsumer $Amazon::SQS::ProducerConsumer::VERSION, Perl $], $^X" );

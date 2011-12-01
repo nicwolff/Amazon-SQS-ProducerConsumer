@@ -32,17 +32,17 @@ $SIG{CHLD} = 'IGNORE';
 
 =head1 SYNOPSIS
 
-use Angel::Amazon::SQS::Consumer;
+  use Angel::Amazon::SQS::Consumer;
 
-my $in_queue = new Angel::Amazon::SQS::Consumer
-	AWSAccessKeyId => 'PUBLIC_KEY_HERE',
-	SecretAccessKey => 'SECRET_KEY_HERE',
-	ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
-	queue => 'YourInputQueue';
+  my $in_queue = new Angel::Amazon::SQS::Consumer
+    AWSAccessKeyId => 'PUBLIC_KEY_HERE',
+    SecretAccessKey => 'SECRET_KEY_HERE',
+    ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
+    queue => 'YourInputQueue';
 
-while ( my $item = $in_queue->next ) {
-	# Do stuff with the item
-}
+  while ( my $item = $in_queue->next ) {
+    # Do stuff with the item
+  }
 
 =head1 METHODS
 
@@ -76,6 +76,8 @@ The number of seconds to wait for a new message when the queue is empty.
 
 A flag to turn on debugging. It is turned off by default.
 
+=back
+
 =cut
 
 sub new {
@@ -106,10 +108,7 @@ sub next {
 	my $me = shift;
 
 	# If we're done with the previous message, delete it
-	if ( $me->{DeleteMessageHandle} ) {
-		say "deleting message $me->{DeleteMessageHandle}" if $me->{debug};
-		$me->delete_message( Queue => $me->{queue}, ReceiptHandle => $me->{DeleteMessageHandle} );
-	}
+	$me->delete_previous();
 
 	if ( @ARGV ) {
 		$me->{messages} = [ map { MessageId => undef, Body => $_ }, @ARGV ];
@@ -125,7 +124,7 @@ sub next {
 			Queue => $me->{queue},
 			MaxNumberOfMessages => $me->{n_messages},
 			defined $me->{timeout} ? ( VisibilityTimeout => $me->{timeout} ) : ()
-		) unless @{$me->{messages}} or $me->{no_loop};
+		) unless defined $me->{messages} && @{$me->{messages}} or $me->{no_loop};
 
 		# If there's a message in the cache, return it
 		if ( my $message = shift @{$me->{messages}} ) {
@@ -156,6 +155,15 @@ sub next {
 	# If we've retried for a while and gotten no messages, give up
 	return undef;
 
+}
+
+sub delete_previous {
+	my $me = shift;
+
+	if ( $me->{DeleteMessageHandle} ) {
+		say "deleting message $me->{DeleteMessageHandle}" if $me->{debug};
+		$me->delete_message( Queue => $me->{queue}, ReceiptHandle => $me->{DeleteMessageHandle} );
+	}
 }
 
 sub defer { delete $_[0]->{DeleteMessageHandle} }

@@ -109,15 +109,17 @@ sub publish {
 	my $me = shift;
 	my $old_data = shift if ref $_[0];
 	my $data = { %$old_data, @_ };
+	my $encoded_data = encode_json $data;
 
-	say 'Queueing message: ' . encode_json $data if $data->{_debug};
+	say "Queueing message: $encoded_data" if $data->{_debug};
 	return if $data->{_test};
 
 	my $retries;
+	my $message_id;
 	until (
-		$me->send_message(
+		$message_id = $me->send_message(
 			Queue => $me->{queue},
-			MessageBody => encode_json $data,
+			MessageBody => $encoded_data,
 		)
 	) {
 		say "couldn't queue message: ", $me->error;
@@ -125,8 +127,7 @@ sub publish {
 			say "trying again in $retries seconds";
 			sleep $retries;
 		} else {
-			say "giving up trying to publish to queue $me->{queue} with message body:",
-				encode_json $data;
+			say "giving up trying to publish to queue $me->{queue} with message body: $encoded_data",
 			return;
 		}
 	}
@@ -145,6 +146,8 @@ sub publish {
 			say "started consumer $me->{consumer} with PID $pid for queue $me->{queue}";
 		}
 	}
+
+	return $message_id;
 
 }
 

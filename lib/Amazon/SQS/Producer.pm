@@ -27,29 +27,29 @@ $SIG{CHLD} = 'IGNORE';
 
 =head1 SYNOPSIS
 
-use Amazon::SQS::Producer;
+  use Amazon::SQS::Producer;
 
-my $out_queue = new Angel::Amazon::SQS::Publisher
-	AWSAccessKeyId => 'PUBLIC_KEY_HERE',
-	SecretAccessKey => 'SECRET_KEY_HERE',
-	ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
-	queue => 'YourOutputQueue',
-	consumer => 'ConsumerForOutputQueue';
+  my $out_queue = new Amazon::SQS::Producer
+    AWSAccessKeyId => 'PUBLIC_KEY_HERE',
+    SecretAccessKey => 'SECRET_KEY_HERE',
+    ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
+    queue => 'YourOutputQueue',
+    consumer => 'ConsumerForOutputQueue';
 
-$out_queue->publish(
-	$existingObjectRef,
-	url => $enclosure_URL,
-	pubdate => $pubDate,
-	title => $title,
-	description => $description,
-	rss_guid => $guid,
-);
+  $out_queue->publish(
+    $existingObjectRef,
+    url => $enclosure_URL,
+    pubdate => $pubDate,
+    title => $title,
+    description => $description,
+    rss_guid => $guid,
+  );
 
 =head1 METHODS
 
 =head2 new(%params)
 
-This is the constructor, it will return you an Angel::Amazon::SQS::Publisher object to work with.  It takes these parameters:
+This is the constructor, it will return you an Amazon::SQS::Producer object to work with.  It takes these parameters:
 
 =over
 
@@ -76,6 +76,8 @@ The name of an executable that will consume messages from the queue we're publis
 =item debug (optional)
 
 A flag to turn on debugging. It is turned off by default.
+
+=back
 
 =cut
 
@@ -109,15 +111,17 @@ sub publish {
 	my $me = shift;
 	my $old_data = shift if ref $_[0];
 	my $data = { %$old_data, @_ };
+	my $encoded_data = encode_json $data;
 
-	say 'Queueing message: ' . encode_json $data if $data->{_debug};
+	say "Queueing message: $encoded_data" if $data->{_debug};
 	return if $data->{_test};
 
 	my $retries;
+	my $message_id;
 	until (
-		$me->send_message(
+		$message_id = $me->send_message(
 			Queue => $me->{queue},
-			MessageBody => encode_json $data,
+			MessageBody => $encoded_data,
 		)
 	) {
 		say "couldn't queue message: ", $me->error;
@@ -125,8 +129,7 @@ sub publish {
 			say "trying again in $retries seconds";
 			sleep $retries;
 		} else {
-			say "giving up trying to publish to queue $me->{queue} with message body:",
-				encode_json $data;
+			say "giving up trying to publish to queue $me->{queue} with message body: $encoded_data",
 			return;
 		}
 	}
@@ -145,6 +148,8 @@ sub publish {
 			say "started consumer $me->{consumer} with PID $pid for queue $me->{queue}";
 		}
 	}
+
+	return $message_id;
 
 }
 

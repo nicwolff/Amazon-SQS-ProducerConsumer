@@ -60,7 +60,6 @@ sub new {
 
 sub initialize {
 	my $me = shift;
-	$me->{debug} = 1;
 	$me->{signature_version} = 2;
 	$me->{version} = '2009-02-01';
 	$me->{host} = 'queue.amazonaws.com';

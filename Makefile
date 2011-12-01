@@ -10,7 +10,7 @@
 #
 #   MakeMaker Parameters:
 
-#     ABSTRACT => q[Produce/Consume classes for Amazon Simple Queue Service (SQS)]
+#     ABSTRACT => q[Producer and Consumer classes for Amazon Simple Queue Service (SQS)]
 #     AUTHOR => q[Nic Wolff <nic@angel.net>]
 #     LICENSE => q[perl]
 #     NAME => q[Amazon::SQS::ProducerConsumer]
@@ -496,7 +496,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '--- #YAML:1.0' > META_new.yml
 	$(NOECHO) $(ECHO) 'name:                Amazon-SQS-ProducerConsumer' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version:             0.01' >> META_new.yml
-	$(NOECHO) $(ECHO) 'abstract:            Produce/Consume classes for Amazon Simple Queue Service (SQS)' >> META_new.yml
+	$(NOECHO) $(ECHO) 'abstract:            Producer and Consumer classes for Amazon Simple Queue Service (SQS)' >> META_new.yml
 	$(NOECHO) $(ECHO) 'license:             perl' >> META_new.yml
 	$(NOECHO) $(ECHO) 'author:              ' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - Nic Wolff <nic@angel.net>' >> META_new.yml
@@ -799,7 +799,7 @@ testdb_static :: testdb_dynamic
 ppd :
 	$(NOECHO) $(ECHO) '<SOFTPKG NAME="$(DISTNAME)" VERSION="0,01,0,0">' > $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <TITLE>$(DISTNAME)</TITLE>' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '    <ABSTRACT>Produce/Consume classes for Amazon Simple Queue Service (SQS)</ABSTRACT>' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '    <ABSTRACT>Producer and Consumer classes for Amazon Simple Queue Service (SQS)</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Nic Wolff &lt;nic@angel.net&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <DEPENDENCY NAME="Test-More" VERSION="0,0,0,0" />' >> $(DISTNAME).ppd
