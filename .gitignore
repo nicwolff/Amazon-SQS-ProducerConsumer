@@ -1,1 +1,3 @@
-blib
+.DS_Store
+blib/**/*
+*.tar.gz
