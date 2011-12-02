@@ -32,9 +32,9 @@ $SIG{CHLD} = 'IGNORE';
 
 =head1 SYNOPSIS
 
-  use Angel::Amazon::SQS::Consumer;
+  use Amazon::SQS::Consumer;
 
-  my $in_queue = new Angel::Amazon::SQS::Consumer
+  my $in_queue = new Amazon::SQS::Consumer
     AWSAccessKeyId => 'PUBLIC_KEY_HERE',
     SecretAccessKey => 'SECRET_KEY_HERE',
     ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
@@ -48,7 +48,7 @@ $SIG{CHLD} = 'IGNORE';
 
 =head2 new(%params)
 
-This is the constructor, it will return you an Angel::Amazon::SQS::Consumer object to work with.  It takes these parameters:
+This is the constructor, it will return you an Amazon::SQS::Consumer object to work with.  It takes these parameters:
 
 =over
 

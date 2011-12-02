@@ -1,4 +1,4 @@
-Amazon-SQS-ProducerConsumer
+Amazon::SQS::ProducerConsumer
 
 This module makes it easy to use Amazon's Simple Queue Service to coordinate
 worker processes using a producer/consumer pattern in which each process
