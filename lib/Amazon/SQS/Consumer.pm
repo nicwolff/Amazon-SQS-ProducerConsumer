@@ -18,13 +18,7 @@ use constant {
 
 Amazon::SQS::Consumer - Receive messages from an Amazon Simple Queue Service (SQS) queue
 
-=head1 VERSION
-
-Version 0.01
-
 =cut
-
-our $VERSION = '0.01';
 
 sub say (@) { warn join ' ', (split ' ', scalar localtime)[2,1,4,3], "[$$]", (split '/', $0)[-1], @_, "\n"; return @_; }
 $SIG{INT} = sub { say 'caught signal INT'; exit 0; };

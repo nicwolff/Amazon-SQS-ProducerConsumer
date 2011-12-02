@@ -13,13 +13,7 @@ use constant MAX_RETRIES => 3;
 
 Amazon::SQS::Producer - Publish messages to an Amazon Simple Queue Service (SQS) queue
 
-=head1 VERSION
-
-Version 0.01
-
 =cut
-
-our $VERSION = '0.01';
 
 sub say (@) { warn join ' ', (split ' ', scalar localtime)[2,1,4,3], "[$$]", (split '/', $0)[-1], @_, "\n"; return @_; }
 $SIG{INT} = sub { say 'caught signal INT'; exit 0; };
