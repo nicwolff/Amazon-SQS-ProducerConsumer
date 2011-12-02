@@ -65,7 +65,11 @@ The URL of the queue to publish messages to. If you gave the ResourceURIPrefix p
 
 =item consumer (optional)
 
-The name of an executable that will consume messages from the queue we're publishing to. An instance will be launched after the first message is published.
+The name of an executable that will consume messages from the queue we're publishing to. An instance will be launched after the each message is published, up to the maximum set by...
+
+=item start_consumers (optional)
+
+The maximum number of consumer instance to launch.
 
 =item debug (optional)
 
