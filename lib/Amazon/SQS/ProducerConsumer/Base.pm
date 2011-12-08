@@ -9,7 +9,6 @@ use LWP::UserAgent;
 use Digest::HMAC_SHA1;
 use URI::Escape qw(uri_escape_utf8);
 use MIME::Base64 qw(encode_base64);
-use Data::Dumper;
 
 =head1 NAME
 
@@ -17,11 +16,11 @@ Amazon::SQS::ProducerConsumer::Base - Perl interface to the Amazon Simple Queue 
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
