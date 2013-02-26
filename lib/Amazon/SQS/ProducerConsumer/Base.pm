@@ -10,6 +10,7 @@ use Digest::HMAC_SHA1;
 use URI::Escape qw(uri_escape_utf8);
 use MIME::Base64 qw(encode_base64);
 
+
 =head1 NAME
 
 Amazon::SQS::ProducerConsumer::Base - Perl interface to the Amazon Simple Queue Service (SQS) environment
@@ -61,7 +62,7 @@ sub initialize {
 	my $me = shift;
 	$me->{signature_version} = 2;
 	$me->{version} = '2009-02-01';
-	$me->{host} = 'queue.amazonaws.com';
+	$me->{host} ||= 'queue.amazonaws.com';
 #	$me->{host} = 'sqs.us-east-1.amazonaws.com';
 #	$me->{ResourceURIPrefix} = $me->{host};
 }
@@ -197,9 +198,9 @@ sub sign_and_post {
 sub check_error {
 	my ($me, $xml) = @_;
 
-	if ( grep { defined && length } $xml->{Error} ) {
-		$me->debug("ERROR: $xml->{Error}{Message}");
-		$me->{error} = $xml->{Error}{Message};
+	if ( defined $xml->{Errors} && defined $xml->{Errors}{Error} ) {
+		$me->debug("ERROR: $xml->{Errors}{Error}{Message}");
+		$me->{error} = $xml->{Errors}{Error}{Message};
 		warn $me->{error};
 		return 1;
 	}
