@@ -3,13 +3,10 @@
 use warnings;
 use strict;
 
-use Test::More tests => 5;
+use Test::More tests => 4;
 use Test::Warn;
-use Data::Dumper;
 
-
-use_ok( 'Amazon::SQS::Producer' );
-use_ok( 'Amazon::SQS::Consumer' );
+use_ok( 'Amazon::SQS::ProducerConsumer::Base' );
 
 my $sqs = new Amazon::SQS::ProducerConsumer::Base (
         AWSAccessKeyId => 'foobar',
