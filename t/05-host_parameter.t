@@ -4,7 +4,6 @@ use warnings;
 use strict;
 
 use Test::More;
-use Data::Dumper;
 
 if ( $ENV{AWS_PUBLIC_KEY} && $ENV{AWS_SECRET_KEY} ) {
         plan tests => 2;
