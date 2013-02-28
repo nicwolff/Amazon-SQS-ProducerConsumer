@@ -27,6 +27,8 @@ my $out_queue = new Amazon::SQS::Producer
 
 my $n;
 
+$out_queue->publish( { test => 'this is a test' } );
+
 ITEM: while ( my $item = $in_queue->next ) {
 
 	ok( $item ) || warn 'Out of messages' && last;
