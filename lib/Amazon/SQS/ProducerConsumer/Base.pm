@@ -10,7 +10,6 @@ use Digest::HMAC_SHA1;
 use URI::Escape qw(uri_escape_utf8);
 use MIME::Base64 qw(encode_base64);
 
-
 =head1 NAME
 
 Amazon::SQS::ProducerConsumer::Base - Perl interface to the Amazon Simple Queue Service (SQS) environment
@@ -25,25 +24,35 @@ our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
- use Angel::Amazon::SQS;
+ use Amazon::SQS::ProducerConsumer::Base;
 
- my $sqs = new Angel::Amazon::SQS
-	AWSAccessKeyId => 'PUBLIC_KEY_HERE',
-	SecretAccessKey => 'SECRET_KEY_HERE';
+ my $sqs = new Amazon::SQS::ProducerConsumer::Base
+   AWSAccessKeyId => 'PUBLIC_KEY_HERE',
+   SecretAccessKey => 'SECRET_KEY_HERE';
+
+ # List queues
+ my @queue_items = $sqs->list_queues();
+ print map {"$_\n"}  @queue_items;
+ print "\n";
 
  # Create a queue
  my $queueURL = $sqs->create_queue( QueueName => 'TestQueue' );
+
+ # List queues.
+ # We will see the queue we created.
+ @queue_items = $sqs->list_queues();
+ print map {"$_\n"}  @queue_items;
+ print "\n";
 
  # Send a message to that queue
  my $messageID = $sqs->send_message( Queue => $queueURL, MessageBody => 'Test message' );
 
  # Get a message from that queue
  my $message = $sqs->receive_message( Queue => $queueURL );
- print 'Message ID: ', $message->{MessageId}, "\n";
- print 'Message: ', $message->{MessageBody}, "\n";
+ print 'Message: ', $message->{Body}, "\n";
 
  # Delete the message you got
- my $message = $sqs->delete_message( Queue => $queueURL, MessageId => $message->{MessageId} );
+ $message = $sqs->delete_message( Queue => $queueURL, ReceiptHandle => $message->{ReceiptHandle} );
 
 If an error occurs in communicating with SQS, the return value will be undef and $sqs->{error} will be populated with the message.
 
