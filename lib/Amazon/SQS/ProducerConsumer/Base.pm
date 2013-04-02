@@ -44,8 +44,11 @@ our $VERSION = '0.03';
  print map {"$_\n"}  @queue_items;
  print "\n";
 
+ # If queue has already been created
+ $queueURL = $sqs->get_queue_url ( QueueName => 'TestQueue');
+ 
  # Send a message to that queue
- my $messageID = $sqs->send_message( Queue => $queueURL, MessageBody => 'Test message' );
+ $sqs->send_message( Queue => $queueURL, MessageBody => 'Test message' );
 
  # Get a message from that queue
  my $message = $sqs->receive_message( Queue => $queueURL );
@@ -55,6 +58,23 @@ our $VERSION = '0.03';
  $message = $sqs->delete_message( Queue => $queueURL, ReceiptHandle => $message->{ReceiptHandle} );
 
 If an error occurs in communicating with SQS, the return value will be undef and $sqs->{error} will be populated with the message.
+
+=head1 ATTRIBUTES
+
+=head2 AWSAccessKeyId (required)
+
+Your AWS access key.
+
+=head2 SecretAccessKey (required)
+
+Your secret key, WARNING! don't give this out or someone will be able
+to use your account and incur charges on your behalf.
+
+=head2 host (optional)
+
+In AWS literature, the term is endpoint. If attribute not supplied,
+default value is 'queue.amazonaws.com'.
+
 
 =cut
 
@@ -70,11 +90,22 @@ sub new {
 sub initialize {
 	my $me = shift;
 	$me->{signature_version} = 2;
-	$me->{version} = '2009-02-01';
+	#$me->{version} = '2009-02-01';
+	$me->{version} = '2012-11-05';
 	$me->{host} ||= 'queue.amazonaws.com';
 #	$me->{host} = 'sqs.us-east-1.amazonaws.com';
 #	$me->{ResourceURIPrefix} = $me->{host};
 }
+
+=head1 METHODS
+
+=head2 create_queue
+
+  my $queueURL = $sqs->create_queue( QueueName => 'TestQueue' );
+
+Creates the queue. Does nothing if queue already exists. Returns the url of the queue.
+
+=cut
 
 sub create_queue {
 	my ($me, %args) = @_;
@@ -83,6 +114,35 @@ sub create_queue {
 	return undef if $me->check_error( $xml );
 	return $xml->{CreateQueueResult}{QueueUrl};
 }
+
+=head2 get_queue_url
+
+  $queueURL = $sqs->get_queue_url ( QueueName => 'TestQueue');
+
+If queue already exists, return the url of the queue.
+
+If queue does not exist, emit a warning. This behavior is not ideal and
+will likely change.
+
+=cut
+
+sub get_queue_url {
+  my ($me, %args) = @_;
+
+  my $xml = $me->sign_and_post( Action => 'GetQueueUrl', %args );
+  return undef if $me->check_error( $xml );
+  return $xml->{GetQueueUrlResult}{QueueUrl};
+  
+}
+
+=head2 list_queues
+
+  my @queue_items = $sqs->list_queues();
+  print map {"$_\n"}  @queue_items;
+
+Receive a list of queues associated with the current SQS endpoint.
+
+=cut
 
 sub list_queues {
 	my ($me, %args) = @_;
@@ -96,6 +156,16 @@ sub list_queues {
 	return ref $result eq 'ARRAY' ? @$result : $result;
 }
 
+=head2 delete_queue
+
+  $sqs->delete_queue (Queue => $queueURL);
+
+Delete a queue associated with the current SQS endpoint. Use with caution.
+Data loss is permanent. Must wait 60 seconds before you can call create_queue
+to create the same queue again.
+
+=cut
+
 sub delete_queue {
 	my ($me, %args) = @_;
 
@@ -106,7 +176,19 @@ sub delete_queue {
 	return $xml->{ResponseMetadata}{RequestId};
 }
 
-sub send_message {
+=head2 send_message
+
+  $sqs->send_message( Queue => $queueURL, MessageBody => 'Test message' );
+
+Send a message to the queue. Requires MessageBody.
+
+Specifying the Queue may be a bit too low level.
+Probably better to use this function from
+a derived class that will abstract away such details.
+
+=cut
+
+ sub send_message {
 	my ($me, %args) = @_;
 
 	my $xml = $me->sign_and_post( Action => 'SendMessage', %args );
@@ -114,6 +196,19 @@ sub send_message {
 
 	return $xml->{SendMessageResult}{MessageId};
 }
+
+=head2 receive_message
+
+  my $message = $sqs->receive_message( Queue => $queueURL );
+  print 'Message: ', $message->{Body}, "\n";
+
+Receive a message hash from the queue. Does not remove from queue.
+Use delete_message() to remove from queue.
+
+Function may be a bit too low level. Probably better to use this function from
+a derived class that will abstract away the details.
+
+=cut
 
 sub receive_message {
 	my ($me, %args) = @_;
@@ -134,12 +229,49 @@ sub receive_messages {
 	return ref $result eq 'ARRAY' ? $result : [ $result ];
 }
 
+=head2 delete_message
+
+  $sqs->delete_message( Queue => $queueURL,  ReceiptHandle => $message->{ReceiptHandle});
+
+Delete the message from the queue. Use the ReceiptHandle from receive_message
+to identify which message to delete.
+
+Function may be a bit too low level. Probably better to use this function from
+a derived class that will abstract away the details.
+
+=cut
+
 sub delete_message {
 	my ($me, %args) = @_;
 
 	my $xml = $me->sign_and_post( Action => 'DeleteMessage', %args );
 	return undef if $me->check_error( $xml );
 	return $xml->{ResponseMetadata}{RequestId};
+}
+
+=head2 get_all_queue_attributes
+
+  $sqs->get_all_queue_attributes( Queue => $queueURL );
+
+Returns a hash reference of all queue attributes.
+
+=cut
+
+sub get_all_queue_attributes {
+  my ($me, %args) = @_;
+
+  my $xml = $me->sign_and_post( Action => 'GetQueueAttributes',  AttributeName => 'All', %args );
+  return undef if $me->check_error( $xml );
+  my $result = $xml->{GetQueueAttributesResult};
+
+  my %all_queue_attributes;
+  foreach my $name_value (@{$result->{Attribute}}) {
+    my $name  = $name_value->{Name};
+    my $value = $name_value->{Value};
+    $all_queue_attributes{$name} = $value;
+  }
+
+  return \%all_queue_attributes;
 }
 
 sub get_queue_attributes {
@@ -161,8 +293,10 @@ sub set_queue_attributes {
 sub sign_and_post {
 	my ($me, %args) = @_;
 
-	$me->{resource_path} = join '/', '', grep $_, $args{AWSAccessKeyId}, delete $args{Queue} if exists $args{Queue};
-	$me->{resource_path} ||= '/';
+	my $resource_path = '';
+	if ($args{Queue}) {
+	  $resource_path .= $args{Queue};
+	}
 
 	my @t = gmtime;
 
@@ -178,9 +312,9 @@ sub sign_and_post {
 		push @params, join '=', $_, uri_escape_utf8( $args{$_}, "^A-Za-z0-9\-_.~" );
 	}
 
-	$me->{resource_path} =~ s|http://$me->{host}/||;
+	$resource_path =~ s|http[s]?://$me->{host}/||;
 	my $string_to_sign = join( "\n",
-                'POST', $me->{host}, $me->{resource_path}, join( '&', @params )
+                'POST', $me->{host}, "/$resource_path", join( '&', @params )
         );
 
 	$me->debug("QUERY TO SIGN: $string_to_sign");
@@ -191,7 +325,7 @@ sub sign_and_post {
 	$me->debug("ENCODED SIGNATURE: $encoded");
 	$args{Signature} = $encoded;
 
-	my $result = LWP::UserAgent->new->post( "http://$me->{host}$me->{resource_path}", \%args );
+	my $result = LWP::UserAgent->new->post( "http://$me->{host}/$resource_path", \%args );
 
 	$me->debug("REQUEST RETURNED: " . $result->content);
 
@@ -271,10 +405,11 @@ L<http://search.cpan.org/dist/Amazon-SQS-ProducerConsumer/>
 
 =head1 ACKNOWLEDGEMENTS
 
+Some code contributions by Lambert Lum
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 Nic Wolff.
+Copyright 2013 Nic Wolff.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
