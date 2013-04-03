@@ -93,8 +93,6 @@ sub initialize {
 	#$me->{version} = '2009-02-01';
 	$me->{version} = '2012-11-05';
 	$me->{host} ||= 'queue.amazonaws.com';
-#	$me->{host} = 'sqs.us-east-1.amazonaws.com';
-#	$me->{ResourceURIPrefix} = $me->{host};
 }
 
 =head1 METHODS

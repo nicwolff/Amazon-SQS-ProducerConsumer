@@ -31,7 +31,6 @@ $SIG{CHLD} = 'IGNORE';
   my $in_queue = new Amazon::SQS::Consumer
     AWSAccessKeyId => 'PUBLIC_KEY_HERE',
     SecretAccessKey => 'SECRET_KEY_HERE',
-    ResourceURIPrefix => 'http://queue.amazonaws.com/YOUR_QUEUE_KEY/',
     queue => 'YourInputQueue';
 
   while ( my $item = $in_queue->next ) {
@@ -54,13 +53,9 @@ Your AWS access key.
 
 Your secret key, WARNING! don't give this out or someone will be able to use your account and incur charges on your behalf.
 
-=item ResourceURIPrefix (optional)
-
-The beginnning of the URI that defines all your SQS resources. If this is defined, then you can refer to your queues by name, without giving the whole URI every time.
-
 =item queue (required)
 
-The URL of the queue to receive messages from. If you gave the ResourceURIPrefix parameter above, then this can just be the queue name, rather than the whole URI.
+The URL of the queue to receive messages from.
 
 =item wait_seconds (optional)
 
