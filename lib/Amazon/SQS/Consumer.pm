@@ -87,10 +87,6 @@ sub initialize {
 	
   my $queue = $me->{queue};
   die "queue attribute is required" if !$queue;
-  die "queue attribute must be a URL" if $queue !~ m{^http[s]?://};
-
-  my ($host) = $queue =~ m{^http[s]?://([^/]+)};
-  $me->{host} = $host;
 
   $me->SUPER::initialize;
 }

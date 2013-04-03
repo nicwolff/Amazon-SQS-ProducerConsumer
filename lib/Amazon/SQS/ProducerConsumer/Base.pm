@@ -93,6 +93,18 @@ sub initialize {
 	#$me->{version} = '2009-02-01';
 	$me->{version} = '2012-11-05';
 	$me->{host} ||= 'queue.amazonaws.com';
+
+	# parameter specific to subclasses Consumer and Producer
+	my $queue = $me->{queue};
+	if (defined $queue) {
+	  if ($queue !~ m{/}) {
+	    $queue = $me->get_queue_url(QueueName => $queue);
+	    $me->{queue} = $queue;
+	  }
+	  my ($host) = $queue =~ m{^http[s]?://([^/]+)};
+	  die "queue attribute must be a URL" if !$host;
+	  $me->{host} = $host;
+	}
 }
 
 =head1 METHODS
@@ -331,7 +343,7 @@ sub sign_and_post {
 		my $parser = XML::Simple->new( ForceArray => [ 'item', 'QueueURL','AttributedValue', 'Attribute' ] );
 		return $parser->XMLin( $result->content() );
 	} else {
-		return { Errors => { Error => { Message => 'HTTP POST failed with error ' . $result->status_line } } };
+	  return { Errors => { Error => { Message => 'HTTP POST failed with error ' . $result->status_line } } };
 	}
 
 }
