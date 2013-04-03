@@ -25,9 +25,9 @@ our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
- use Angel::Amazon::SQS;
+ use Amazon::SQS::ProducerConsumer::Base;
 
- my $sqs = new Angel::Amazon::SQS
+ my $sqs = new Amazon::SQS::ProducerConsumer::Base
 	AWSAccessKeyId => 'PUBLIC_KEY_HERE',
 	SecretAccessKey => 'SECRET_KEY_HERE';
 
