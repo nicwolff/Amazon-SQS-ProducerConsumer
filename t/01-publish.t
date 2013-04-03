@@ -18,22 +18,15 @@ use_ok( 'Amazon::SQS::Producer' );
 use_ok( 'Amazon::SQS::Consumer' );
 
 sub test_producer_consumer {
-  my ($host) = @_;
-
-  my %params = (
+  my $sqs = new Amazon::SQS::ProducerConsumer::Base (
         AWSAccessKeyId => $ENV{AWS_PUBLIC_KEY},
         SecretAccessKey => $ENV{AWS_SECRET_KEY},
+        @_,
   );
-  
-  if ($host) {
-    $params{host} = $host;
-  }
-
-  my $sqs = new Amazon::SQS::ProducerConsumer::Base (%params);
 
   my $queue_name = 'TestQueueForPublishTestScript';
   my $queueURL = $sqs->create_queue( QueueName => $queue_name );
-  ok ($queueURL, "Create TestQueueForPublishTestScript");
+  ok ($queueURL, "Create $queue_name");
 
   my $out_queue = new Amazon::SQS::Producer(
           AWSAccessKeyId => $ENV{AWS_PUBLIC_KEY},
@@ -72,4 +65,4 @@ sub test_producer_consumer {
 }
 
 test_producer_consumer();
-test_producer_consumer('sqs.us-east-1.amazonaws.com');
+test_producer_consumer(host => 'sqs.us-east-1.amazonaws.com');
