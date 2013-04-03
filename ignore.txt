@@ -1,6 +1,4 @@
 .git
-.gitignore
-.DS_Store
 blib*
 Makefile
 Makefile.old
@@ -12,4 +10,4 @@ pm_to_blib*
 .lwpcookies
 cover_db
 pod2htm*.tmp
-Amazon-SQS-ProducerConsumer-*
+IO-File-Cycle-*

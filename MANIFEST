@@ -2,7 +2,8 @@ Changes
 lib/Amazon/SQS/ProducerConsumer/Base.pm
 lib/Amazon/SQS/Producer.pm
 lib/Amazon/SQS/Consumer.pm
-Makefile.PL
+Build.PL
+ignore.txt
 MANIFEST			This list of files
 README
 t/00-load.t
