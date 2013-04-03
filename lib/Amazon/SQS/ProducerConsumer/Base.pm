@@ -63,8 +63,6 @@ sub initialize {
 	$me->{signature_version} = 2;
 	$me->{version} = '2009-02-01';
 	$me->{host} ||= 'queue.amazonaws.com';
-#	$me->{host} = 'sqs.us-east-1.amazonaws.com';
-#	$me->{ResourceURIPrefix} = $me->{host};
 }
 
 sub create_queue {
