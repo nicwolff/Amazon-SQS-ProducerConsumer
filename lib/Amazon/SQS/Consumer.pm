@@ -31,7 +31,7 @@ $SIG{CHLD} = 'IGNORE';
   my $in_queue = new Amazon::SQS::Consumer
     AWSAccessKeyId => 'PUBLIC_KEY_HERE',
     SecretAccessKey => 'SECRET_KEY_HERE',
-    queue => 'YourInputQueue';
+    queue => 'YourInputQueueURL';
 
   while ( my $item = $in_queue->next ) {
     # Do stuff with the item
@@ -84,7 +84,15 @@ sub initialize {
 
 	$me->{n_messages} ||= DEFAULT_N_MESSAGES;
 	$me->{wait_seconds} ||= DEFAULT_WAIT_SECONDS;
-	$me->SUPER::initialize;
+	
+  my $queue = $me->{queue};
+  die "queue attribute is required" if !$queue;
+  die "queue attribute must be a URL" if $queue !~ m{^http[s]?://};
+
+  my ($host) = $queue =~ m{^http[s]?://([^/]+)};
+  $me->{host} = $host;
+
+  $me->SUPER::initialize;
 }
 
 =head2 next()
@@ -175,7 +183,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Amazon::SQS::ProducerConsumer
+    perldoc Amazon::SQS::Consumer
 
 
 You can also look for information at:
@@ -203,10 +211,11 @@ L<http://search.cpan.org/dist/Amazon-SQS-ProducerConsumer/>
 
 =head1 ACKNOWLEDGEMENTS
 
+Some code contributions by Lambert Lum
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 Nic Wolff.
+Copyright 2013 Nic Wolff.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published

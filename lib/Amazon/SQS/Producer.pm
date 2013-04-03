@@ -26,7 +26,7 @@ $SIG{CHLD} = 'IGNORE';
   my $out_queue = new Amazon::SQS::Producer
     AWSAccessKeyId => 'PUBLIC_KEY_HERE',
     SecretAccessKey => 'SECRET_KEY_HERE',
-    queue => 'YourOutputQueue',
+    queue => 'YourOutputQueueURL',
     consumer => 'ConsumerForOutputQueue';
 
   $out_queue->publish(
@@ -87,8 +87,16 @@ sub new {
 sub initialize {
 	my $me = shift;
 
-	$me->{sleep_after_starting_consumer} = 2 if not exists $me->{sleep_after_starting_consumer};
-	$me->SUPER::initialize;
+  $me->{sleep_after_starting_consumer} = 2 if not exists $me->{sleep_after_starting_consumer};
+  
+  my $queue = $me->{queue};
+  die "queue attribute is required" if !$queue;
+  die "queue attribute must be a URL" if $queue !~ m{^http[s]?://};
+
+  my ($host) = $queue =~ m{^http[s]?://([^/]+)};
+  $me->{host} = $host;
+
+  $me->SUPER::initialize;
 }
 
 =head2 publish(%params)
@@ -198,7 +206,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Amazon::SQS::ProducerConsumer
+    perldoc Amazon::SQS::Producer
 
 
 You can also look for information at:
@@ -226,10 +234,11 @@ L<http://search.cpan.org/dist/Amazon-SQS-ProducerConsumer/>
 
 =head1 ACKNOWLEDGEMENTS
 
+Some code contributions by Lambert Lum
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2011 Nic Wolff.
+Copyright 2013 Nic Wolff.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
