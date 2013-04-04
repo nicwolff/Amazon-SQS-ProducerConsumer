@@ -30,6 +30,9 @@ SKIP: {
 
   ok ( @queue_items > 0, "pre-existing queues");
   my $queue_name = $queue_items[0];   # arbitarrily choose one queue
+  diag "Wait 60 seconds. Maybe the queue is being created.\n";
+  sleep (60);
+
   my $queueURL = $sqs->get_queue_url ("QueueName" => $queue_name);
   ok (defined ($queueURL), "get_queue_url()");
   my $queue_attributes = $sqs->get_all_queue_attributes(Queue => $queueURL);
