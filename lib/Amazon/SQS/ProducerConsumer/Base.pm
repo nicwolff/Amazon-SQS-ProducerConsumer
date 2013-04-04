@@ -98,9 +98,13 @@ sub initialize {
 	my $queue = $me->{queue};
 	if (defined $queue) {
 	
+	  # support deprecated feature
+	  # in case someone is still using queue name for queue parameter
 	  if ($queue !~ m{/}) {
 	    $queue = $me->get_queue_url(QueueName => $queue);
 	    $me->{queue} = $queue;
+	    warn "Use of queue name for queue parameter is now deprecated. " .
+	      "Please use queue url for the queue parameter."
 	  }
 	  
 	  my ($host) = $queue =~ m{^http[s]?://([^/]+)};
