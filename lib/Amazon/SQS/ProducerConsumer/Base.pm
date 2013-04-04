@@ -137,8 +137,7 @@ sub create_queue {
 
 If queue already exists, return the url of the queue.
 
-If queue does not exist, emit a warning. This behavior is not ideal and
-will likely change.
+If queue does not exist, emit a warning.
 
 =cut
 
