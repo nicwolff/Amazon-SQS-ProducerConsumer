@@ -97,10 +97,12 @@ sub initialize {
 	# parameter specific to subclasses Consumer and Producer
 	my $queue = $me->{queue};
 	if (defined $queue) {
+	
 	  if ($queue !~ m{/}) {
 	    $queue = $me->get_queue_url(QueueName => $queue);
 	    $me->{queue} = $queue;
 	  }
+	  
 	  my ($host) = $queue =~ m{^http[s]?://([^/]+)};
 	  die "queue attribute must be a URL" if !$host;
 	  $me->{host} = $host;
@@ -342,7 +344,14 @@ sub sign_and_post {
 	if ( $result->is_success ) {
 		my $parser = XML::Simple->new( ForceArray => [ 'item', 'QueueURL','AttributedValue', 'Attribute' ] );
 		return $parser->XMLin( $result->content() );
-	} else {
+	}
+	else {
+	  my $xml = $result->content;
+	  if ($xml) {
+	    my $parser = XML::Simple->new();
+	    my $aws_response = $parser->XMLin($xml);
+	    warn join ': ', $aws_response->{Error}{Code}, $aws_response->{Error}{Message};
+	  }
 	  return { Errors => { Error => { Message => 'HTTP POST failed with error ' . $result->status_line } } };
 	}
 
@@ -354,7 +363,7 @@ sub check_error {
 	if ( defined $xml->{Errors} && defined $xml->{Errors}{Error} ) {
 		$me->debug("ERROR: $xml->{Errors}{Error}{Message}");
 		$me->{error} = $xml->{Errors}{Error}{Message};
-		warn $me->{error};
+		#warn $me->{error};
 		return 1;
 	}
 }

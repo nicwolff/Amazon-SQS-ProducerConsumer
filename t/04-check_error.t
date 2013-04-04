@@ -16,7 +16,7 @@ my $sqs = new Amazon::SQS::ProducerConsumer::Base (
 my $message;
 warning_like
   { $message = $sqs->create_queue() }
-  qr/^HTTP POST failed with error 403 Forbidden at /,
+  qr/InvalidClientTokenId: The AWS Access Key Id you provided does not exist in our records/,
   "check_error emits warning";
 is ($message, undef, "create_queue() returns undef on error");
 is ($sqs->{error}, 'HTTP POST failed with error 403 Forbidden',
