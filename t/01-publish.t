@@ -58,6 +58,8 @@ sub test_producer_consumer {
   $sqs->delete_queue (Queue => $queueURL);
   diag "wait 60 seconds. delete_queue will take up to 60 seconds to delete queue\n";
   sleep (60);
+  diag "wait 10 seconds. Just in case delete_queue needs more time\n";
+  sleep (10);
 
   my @queue_items = $sqs->list_queues();
   ok ((grep {$_ eq $queue_name} @queue_items) == 0,
