@@ -1,12 +1,13 @@
-#!/usr/bin/perl -s
+#!/usr/bin/perl
 
 use warnings;
 use strict;
 
 use Test::More;
+use Test::Warn;
 
 if ( $ENV{AWS_PUBLIC_KEY} && $ENV{AWS_SECRET_KEY} ) {
-        plan tests => 7;
+        plan tests => 8;
 } else {
         plan skip_all => 'AWS_PUBLIC_KEY and AWS_SECRET_KEY environment variables not set, skipping all tests.';
 }
@@ -49,5 +50,10 @@ sleep (60);
 ok ((grep {$_ eq $queue_name} @queue_items) == 0,
     "queue $queue_name should be absent on $host");
 
-my $post_delete_url = $sqs->get_queue_url( QueueName => $queue_name );
+my $post_delete_url;
+warning_like
+  { $post_delete_url = $sqs->get_queue_url( QueueName => $queue_name ) }
+  qr/^AWS.SimpleQueueService.NonExistentQueue: The specified queue does not exist for this wsdl version./,
+  "get_queue_url() emits warning on non-existent queue";
+
 ok (!defined($post_delete_url), "get_queue_url() gets undef after queue deleted");
