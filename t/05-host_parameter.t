@@ -38,6 +38,9 @@ is ($queueURL, $sqs->get_queue_url( QueueName => $queue_name ),
 
 diag "wait 60 seconds. create_queue may be slow\n";
 sleep (60);
+diag "wait 30 more seconds. paranoid of race conditions\n";
+sleep (30);
+
 my @queue_items = $sqs->list_queues();
 ok ( (grep {$_ eq $queue_name} @queue_items) > 0, "queue $queue_name is present on $host")
   or diag "current queues: " . (join ', ', @queue_items);
@@ -45,6 +48,8 @@ ok ( (grep {$_ eq $queue_name} @queue_items) > 0, "queue $queue_name is present 
 $sqs->delete_queue (Queue => $queueURL);
 diag "wait 60 seconds. delete_queue will take up to 60 seconds to delete queue\n";
 sleep (60); 
+diag "wait 30 more seconds. paranoid of race conditions\n";
+sleep (30);
 
 @queue_items = $sqs->list_queues();
 ok ((grep {$_ eq $queue_name} @queue_items) == 0,

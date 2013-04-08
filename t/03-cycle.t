@@ -60,6 +60,8 @@ is( $n, 5, 'publish and consume 5 items');
 $sqs->delete_queue (Queue => $queueURL);
 diag "wait 60 seconds. delete_queue will take up to 60 seconds to delete queue\n";
 sleep (60);
+diag "wait 30 more seconds. paranoid of race conditions\n";
+sleep (30);
 
 my @queue_items = $sqs->list_queues();
 ok ((grep {$_ eq $queue_name} @queue_items) == 0,

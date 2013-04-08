@@ -32,6 +32,8 @@ SKIP: {
   my $queue_name = $queue_items[0];   # arbitarrily choose one queue
   diag "Wait 60 seconds. Maybe the queue is being created.\n";
   sleep (60);
+  diag "wait 30 more seconds. paranoid of race conditions\n";
+  sleep (30);
 
   my $queueURL = $sqs->get_queue_url ("QueueName" => $queue_name);
   ok (defined ($queueURL), "get_queue_url()");
