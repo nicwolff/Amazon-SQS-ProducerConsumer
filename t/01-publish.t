@@ -58,7 +58,7 @@ sub test_producer_consumer {
   $sqs->delete_queue (Queue => $queueURL);
   diag "wait 60 seconds. delete_queue will take up to 60 seconds to delete queue\n";
   sleep (60);
-  diag "wait more 30 seconds. paranoid of race conditions\n";
+  diag "wait 30 more seconds. paranoid of race conditions\n";
   sleep (30);
 
   my @queue_items = $sqs->list_queues();
