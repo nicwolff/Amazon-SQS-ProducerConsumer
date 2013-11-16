@@ -1,5 +1,31 @@
-Revision history for Amazon-SQS-ProducerConsumer
+Revision history for Perl distribution Amazon-SQS-ProducerConsumer
 
-0.01    Date/time
-        First version, released on an unsuspecting world.
+0.04  2013-11-16
+    - Update MANIFEST
+    - Switched to Module::Build
+    - Fix POD in Amazon::SQS::ProducerConsumer::Base
+    - Remove ResourceURIPrefix
+    - Remove commented lines
+    - Fix cycle.t
+    - setting host; checking error check
+      pull request (#1) from emceelam
+
+    [Changes from Lambert Lum <lambert.lum@solidtechusa.com>]
+    - Check for Amazon::SQS::ProducerConsumer::Base
+    - Remove Data::Dumper from test script
+    - Add test case for host parameter
+    - Fix the error checking. Test the error checking.
+    - Allow host to be settable during object instantiation
+
+0.03  2011-12-08
+    - Add start_consumers to POD
+
+0.02  2011-12-01
+    - Add .gitignore to ignore.txt
+    - Fix package name in Consumer
+    - Skip tests if env vars not set
+    - Clean up README
+
+0.01  2011-12-01
+    - First version, released on an unsuspecting world.
 
