@@ -7,3 +7,8 @@ ignore.txt
 MANIFEST			This list of files
 README
 t/00-load.t
+t/01-publish.t
+t/02-consume.t
+t/03-cycle.t
+t/04-check_error.t
+t/05-host_parameter.t
