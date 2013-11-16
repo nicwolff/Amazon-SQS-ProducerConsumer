@@ -12,3 +12,6 @@ t/02-consume.t
 t/03-cycle.t
 t/04-check_error.t
 t/05-host_parameter.t
+Makefile.PL
+META.yml
+META.json
