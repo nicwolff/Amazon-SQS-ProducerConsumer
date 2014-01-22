@@ -23,6 +23,11 @@ my $builder = Module::Build->new(
     },
     add_to_cleanup      => [ 'Amazon-SQS-ProducerConsumer-*' ],
     create_makefile_pl => 'traditional',
+    meta_merge => {
+        resources => {
+            repository => 'https://github.com/nicwolff/Amazon-SQS-ProducerConsumer'
+        }
+    },
 );
 
 $builder->create_build_script();
